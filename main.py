@@ -1,11 +1,10 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import Response
+from fastapi import FastAPI, Request, Response
 from messenger import verify_webhook, handle_message
 
 app = FastAPI()
 
 @app.get("/webhook")
-async def webhook_verify(request: Request):
+def webhook_verify(request: Request):
     return verify_webhook(request)
 
 @app.post("/webhook")

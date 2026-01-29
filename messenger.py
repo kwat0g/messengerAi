@@ -1,9 +1,7 @@
-from fastapi import Response
-import requests
-from config import VERIFY_TOKEN, PAGE_ACCESS_TOKEN, ALLOWED_SENDER_ID
-from commands import process_command
+from fastapi import Request
 from fastapi.responses import PlainTextResponse
 import os
+
 
 
 def verify_webhook(request: Request):

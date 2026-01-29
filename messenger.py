@@ -4,6 +4,9 @@ import os
 
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
 
+async def handle_message(payload: dict):
+    # TEMP stub to keep server alive
+    print("Received payload:", payload)
 
 def verify_webhook(request: Request):
     params = request.query_params

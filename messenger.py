@@ -1,21 +1,16 @@
-from fastapi import Request
-from fastapi.responses import PlainTextResponse
-import os
-
-VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
-
-async def handle_message(payload: dict):
-    # TEMP stub to keep server alive
-    print("Received payload:", payload)
+from fastapi import Request, Response
+from config import VERIFY_TOKEN
 
 def verify_webhook(request: Request):
     params = request.query_params
+    if (
+        params.get("hub.mode") == "subscribe"
+        and params.get("hub.verify_token") == VERIFY_TOKEN
+    ):
+        return Response(content=params.get("hub.challenge"), status_code=200)
 
-    mode = params.get("hub.mode")
-    token = params.get("hub.verify_token")
-    challenge = params.get("hub.challenge")
+    return Response(status_code=403)
 
-    if mode == "subscribe" and token == VERIFY_TOKEN:
-        return PlainTextResponse(content=challenge, status_code=200)
-
-    return PlainTextResponse(content="Verification failed", status_code=403)
+async def handle_message(payload: dict):
+    # minimal stub
+    print("MESSAGE RECEIVED", payload)

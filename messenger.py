@@ -1,3 +1,4 @@
+from fastapi import Response
 import requests
 from config import VERIFY_TOKEN, PAGE_ACCESS_TOKEN, ALLOWED_SENDER_ID
 from commands import process_command
@@ -10,9 +11,10 @@ def verify_webhook(request):
     challenge = params.get("hub.challenge")
 
     if mode == "subscribe" and token == VERIFY_TOKEN:
-        return int(challenge)
+        # IMPORTANT: return plain text, not JSON
+        return Response(content=challenge, media_type="text/plain")
 
-    return "Verification failed"
+    return Response(content="Verification failed", status_code=403)
 
 
 async def handle_message(payload: dict):

@@ -1,7 +1,10 @@
 from fastapi import Request
 from fastapi.responses import PlainTextResponse
 import os
+import requests
 
+from commands import process_command
+from config import VERIFY_TOKEN, PAGE_ACCESS_TOKEN, ALLOWED_SENDER_ID
 
 
 def verify_webhook(request: Request):
@@ -12,6 +15,7 @@ def verify_webhook(request: Request):
     challenge = params.get("hub.challenge")
 
     if mode == "subscribe" and token == VERIFY_TOKEN:
+        # THIS LINE IS WHAT META NEEDS
         return PlainTextResponse(content=challenge, status_code=200)
 
     return PlainTextResponse(content="Verification failed", status_code=403)
@@ -22,7 +26,7 @@ async def handle_message(payload: dict):
         for event in entry.get("messaging", []):
             sender_id = event["sender"]["id"]
 
-            # Allow first run if ALLOWED_SENDER_ID is empty
+            # Optional sender lock
             if ALLOWED_SENDER_ID and sender_id != ALLOWED_SENDER_ID:
                 return
 
